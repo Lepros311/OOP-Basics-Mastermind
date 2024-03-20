@@ -1,8 +1,8 @@
 class Player
-  @@guessed_colors = []
-  @@colors = []
+  @@guess = []
+  @@secret_code = []
 
-  attr_accessor :name, :colors, :guessed_colors
+  attr_accessor :name, :secret_code, :guess
 
   def initialize(name)
     @name = name
@@ -16,32 +16,59 @@ class Player
 
   def codemaker_turn
     # colors = []
+    possible_colors = ["red", "orange", "green", "yellow", "white", "black"]
     puts "#{self.name}, let's make your secret code!"
     4.times do |i|
-      puts "Color #{i+1} - red, blue, green, yellow, white, or black?"
-      @@colors[i] = gets.chomp
+      puts "Color #{i+1} - red, orange, green, yellow, white, or black?"
+      @@secret_code[i] = gets.chomp
+      until possible_colors.include?(@@secret_code[i])
+        @@secret_code.pop
+        puts "That is not a valid option. Please try again."
+      end
     end
-    puts "#{self.name}, your secret code is #{colors}"
+    puts "#{self.name}, your secret code is #{@@secret_code}"
   end
 
   def codebreaker_turn
     # guessed_colors = []
-    12.times do |i| /work in progress; everything inside loop works once/
-      puts "#{self.name}, let's make a guess!"
+    12.times do |i|
+      puts "#{self.name}, make a guess!"
       4.times do |i|
-        puts "Guess color ##{i+1} - red, blue, green, yellow, white, or black?"
-        @@guessed_colors[i] = gets.chomp
+        puts "Guess color ##{i+1} - red, orange, green, yellow, white, or black?"
+        @@guess[i] = gets.chomp
       end
-      puts "#{self.name}, your guess is #{@@guessed_colors}"
-      check_for_winner(self)
+      puts "#{self.name}, your guess is #{@@guess}"
+      break if winner?(self)
+      puts "Sorry, guess again!"
+      compare_guess_to_secret_code
+    end
+    puts "#{self.name}, you lose. You were unable to break the secret code :("
+  end
+
+  def winner?(codebreaker)
+    if @@guess == @@secret_code
+      puts "#{codebreaker.name} matched the secret code: #{@@secret_code}"
+      puts "#{codebreaker.name} the Codebreaker wins!"
+      true
+    else
+      false
     end
   end
 
-  def check_for_winner(codebreaker)
-    if @@guessed_colors == @@colors
-      puts "#{codebreaker.name} matched the secret code: #{@@colors}"
-      puts "#{codebreaker.name} the Codebreaker wins!"
+  def compare_guess_to_secret_code
+    match_count = 0
+    matched_indexes = []
+    color_only_count = 0
+    @@guess.each_with_index do |color, index|
+      if color == @@secret_code[index]
+        match_count += 1
+        matched_indexes.push(index)
+      elsif @@secret_code.include?(color) && !matched_indexes.include?(index)
+        color_only_count += 1
+      end
     end
+    puts "Correct color and location: #{match_count}"
+    puts "Correct color only: #{color_only_count}"
   end
 
 end
