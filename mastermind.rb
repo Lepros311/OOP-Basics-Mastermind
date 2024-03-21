@@ -31,8 +31,10 @@ class Player
       puts "\n#{self.name}, make a guess! (#{i+1} of 12 guesses)"
       4.times do |i|
         loop do
-          puts "Guess color ##{i+1} - red, orange, green, yellow, white, or black?"
-          @@guess[i] = gets.chomp.downcase
+          if self.name != "Computer"
+            puts "Guess color ##{i+1} - red, orange, green, yellow, white, or black?"
+          end
+          self.name == "Computer" ? @@guess[i] = @@possible_colors.sample : @@guess[i] = gets.chomp.downcase
           if @@possible_colors.include?(@@guess[i])
             break
           else
@@ -77,26 +79,27 @@ class Player
 end
 
 class Game
-  attr_accessor
+  puts "~Mastermind~"
 
-  def initialize
-
-  end
-
-  def draw_board
-    puts "Mastermind"
-    puts @@guess
-  end
-
-  puts "Codemaker, what's your name?"
+  puts "\nCodemaker, what's your name?"
   codemaker = Player.new(gets.chomp)
 
-  puts "Codebreaker, what's your name?"
-  codebreaker = Player.new(gets.chomp)
+  for i in 1..Float::INFINITY
+    puts "\n#{codemaker.name}, are you playing against the computer?"
+    comp = gets.chomp.downcase
+    if ["no", "n"].include?(comp)
+      puts "\nCodebreaker, what's your name?"
+      codebreaker = Player.new(gets.chomp)
+    elsif ["yes", "y"].include?(comp)
+      codebreaker = Player.new("Computer")
+    else
+      puts "\nInvalid response. Please answer yes or no..."
+    end
+    break if ["no", "n", "yes", "y"].include?(comp)
+  end
 
   codemaker.codemaker_turn
   codebreaker.codebreaker_turn
-
 end
 
-our_game = Game.new
+Game.new
