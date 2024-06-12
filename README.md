@@ -1,3 +1,3 @@
 # OOP-Basics-Mastermind
 
-<a href="https://replit.com/@lepros/mastermind" target="_blank">Mastermind</a>
+[Play the Mastermind game](https://replit.com/@lepros/mastermind){:target="_blank"}
